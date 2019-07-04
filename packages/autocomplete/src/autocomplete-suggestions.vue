@@ -43,7 +43,11 @@
           };
         }
       },
-      id: String
+      id: String,
+      openDelay: {
+        type: Number,
+        default: 0
+      }
     },
 
     methods: {
@@ -69,8 +73,20 @@
     created() {
       this.$on('visible', (val, inputWidth) => {
         this.dropdownWidth = inputWidth + 'px';
-        this.showPopper = val;
+        clearTimeout(this._timer);
+        if (this.openDelay && val === true) {
+          this._timer = setTimeout(() => {
+            this.showPopper = val;
+          }, this.openDelay);
+        } else {
+          this.showPopper = val;
+        }
       });
+    },
+    cleanup() {
+      if (this.openDelay) {
+        clearTimeout(this._timer);
+      }
     }
   };
 </script>
